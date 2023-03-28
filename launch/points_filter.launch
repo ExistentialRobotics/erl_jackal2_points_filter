@@ -1,0 +1,14 @@
+<launch>
+
+  <node pkg="erl_jackal2_lidar_filter" type="erl_jackal2_lidar_filter_node" name="jackal2_filter_node" output="screen">
+    <param name="input_cloud_topic_name"                 value="/ouster/points" />
+    <param name="output_cloud_topic_name_in_roboframe"   value="/jackal2_filtered/points" />
+    <param name="output_cloud_topic_name_in_worldframe"  value="/jackal2_filtered/points_in_map" />
+    <param name="world_frame_id"                         value="/map" />
+    <param name="x_filter_min"                           value= -0.5 />
+    <param name="x_filter_max"                           value=  0.0 />
+    <param name="y_filter_min"                           value= -0.3 />
+    <param name="y_filter_max"                           value=  0.3 />
+  </node>
+
+</launch>
