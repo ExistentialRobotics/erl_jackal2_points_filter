@@ -67,13 +67,10 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     filtered_cloud->header = pcl_cloud->header;
     filtered_cloud->points.reserve(pcl_cloud->points.size());
 
-    // std::cout << "x_min is equal to " << x_min;
-    // std::cout << "x_max is equal to " << x_max;
-
     // Filter the points one by one
     for (size_t i = 0; i < pcl_cloud->points.size(); i++)
     {
-      pcl::PointXYZ& point = pcl_cloud->points[i];
+      pcl::PointXYZI& point = pcl_cloud->points[i];
 
       // Check if the point meets the filtering condition
       if (!((point.x > x_min && point.x < x_max) && (point.y > y_min && point.y < y_max)))
