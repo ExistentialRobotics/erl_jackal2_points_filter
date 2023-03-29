@@ -48,7 +48,7 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
     nh_.param("x_filter_min", x_min, -0.5);
     nh_.param("x_filter_max", x_max,  0.0);
     nh_.param("y_filter_min", y_min, -0.3);
-    nh_.param("y_filter_min", y_max,  0.3);
+    nh_.param("y_filter_max", y_max,  0.3);
 
     point_cloud_subscriber_          = nh_.subscribe(input_cloud_name, 10, &Jackal2_Cloud_Filter::pointCloudCallback, this);
     robo_filtered_cloud_publisher_   = nh_.advertise<sensor_msgs::PointCloud2>(output_cloud_robo_name,  10);
