@@ -44,8 +44,8 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
     nh_.param("input_cloud_topic_name", input_cloud_name, std::string("/ouster/points"));
     nh_.param("output_cloud_topic_name_in_roboframe" , output_cloud_robo_name,  std::string("/jackal2_cloudfilter/points_robo"));
     nh_.param("output_cloud_topic_name_in_worldframe", output_cloud_world_name, std::string("/jackal2_cloudfilter/points_world"));
-    nh_.param("world_frame_id", world_frame_id, std::string("/map"));
-    nh_.param("lidar_frame_id", lidar_frame_id, std::string("/os_sensor"));
+    nh_.param("world_frame_id", world_frame_id, std::string("map"));
+    nh_.param("lidar_frame_id", lidar_frame_id, std::string("os_sensor"));
     nh_.param("x_filter_min", x_min, -0.5);
     nh_.param("x_filter_max", x_max,  0.0);
     nh_.param("y_filter_min", y_min, -0.3);
