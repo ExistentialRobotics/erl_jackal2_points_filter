@@ -107,7 +107,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     sensor_msgs::PointCloud2 filtered_cloud_msg;
     pcl::toROSMsg(*cloud_filtered, filtered_cloud_msg);
     filtered_cloud_msg.header = cloud_msg->header;
-    pub.publish(filtered_cloud_msg);
+    robo_filtered_cloud_publisher_.publish(filtered_cloud_msg);
     
     tf::TransformListener listener;
     tf::StampedTransform transform;
@@ -122,6 +122,5 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     pcl_ros::transformPointCloud(world_frame_id, filtered_cloud_msg, transformed_point_cloud, listener);
     world_filtered_cloud_publisher_.publish(transformed_point_cloud);
 }
-ros::Publisher pub;
 
 #endif
