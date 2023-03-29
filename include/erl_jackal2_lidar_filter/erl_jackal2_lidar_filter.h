@@ -67,6 +67,9 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     filtered_cloud->header = pcl_cloud->header;
     filtered_cloud->points.reserve(pcl_cloud->points.size());
 
+    std::cout << "x_min is equal to " << x_min;
+    std::cout << "x_max is equal to " << x_max;
+
     // Filter the points one by one
     for (size_t i = 0; i < pcl_cloud->points.size(); i++)
     {
@@ -86,8 +89,8 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     filtered_cloud_msg.header = cloud_msg->header;
     robo_filtered_cloud_publisher_.publish(filtered_cloud_msg);
     
-    tf::TransformListener listener;
-    tf::StampedTransform transform;
+    // tf::TransformListener listener;
+    // tf::StampedTransform transform;
     // try{
     //     listener.lookupTransform(lidar_frame_id, world_frame_id, ros::Time(0), transform);
     // }
@@ -95,9 +98,9 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     //     ROS_ERROR("%s",ex.what());
     //     return;
     // }
-    sensor_msgs::PointCloud2 transformed_point_cloud;
-    pcl_ros::transformPointCloud(world_frame_id, filtered_cloud_msg, transformed_point_cloud, listener);
-    world_filtered_cloud_publisher_.publish(transformed_point_cloud);
+    // sensor_msgs::PointCloud2 transformed_point_cloud;
+    // pcl_ros::transformPointCloud(world_frame_id, filtered_cloud_msg, transformed_point_cloud, listener);
+    // world_filtered_cloud_publisher_.publish(transformed_point_cloud);
 }
 
 #endif
