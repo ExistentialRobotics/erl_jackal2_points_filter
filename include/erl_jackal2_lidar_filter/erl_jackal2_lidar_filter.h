@@ -74,7 +74,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
       pcl::PointXYZ& point = pcl_cloud->points[i];
 
       // Check if the point meets the filtering condition
-      if !(point.x < -0.5 && point.x > 0.0 && point.y < -0.3 && point.y > 0.3)
+      if (point.x < -0.5 || point.x > 0.0 && point.y < -0.3 || point.y > 0.3)
       {
         // Add the point to the filtered point cloud
         filtered_cloud->points.push_back(point);
