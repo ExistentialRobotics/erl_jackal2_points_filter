@@ -58,23 +58,25 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
 
 void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
-    pcl::PointCloud<pcl::PointXYZ> cloud;
-    pcl::fromROSMsg(*cloud_msg, cloud);
+
+    // Convert the input point cloud to a PCL point cloud
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromROSMsg(*cloud_in, *pcl_cloud);
 
     // Apply a passthrough filter to the PCL point cloud
     pcl::PassThrough<pcl::PointXYZ> filter;
-    filter.setInputCloud(cloud);
+    filter.setInputCloud(pcl_cloud);
     filter.setFilterFieldName("x");
     filter.setFilterLimitsNegative(true);
     filter.setFilterLimits(-0.5, 0.0);
-    filter.filter(*cloud);
+    filter.filter(*pcl_cloud);
     filter.setFilterFieldName("y");
     filter.setFilterLimits(-0.3, 0.3);
-    filter.filter(*cloud);
+    filter.filter(*pcl_cloud);
 
     // convert filtered PCL point cloud to PointCloud2 and publish
     sensor_msgs::PointCloud2 filtered_cloud_msg;
-    pcl::toROSMsg(*cloud, filtered_cloud_msg);
+    pcl::toROSMsg(*pcl_cloud, filtered_cloud_msg);
     filtered_cloud_msg.header = cloud_msg->header;
     robo_filtered_cloud_publisher_.publish(filtered_cloud_msg);
     
