@@ -26,6 +26,8 @@ class Jackal2_Cloud_Filter
         double x_max;
         double y_min;
         double y_max;
+        double z_min;
+        double z_max;
 
         void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud);
 
@@ -49,6 +51,8 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
     nh_.param("x_filter_max", x_max,  0.0);
     nh_.param("y_filter_min", y_min, -0.3);
     nh_.param("y_filter_max", y_max,  0.3);
+    nh_.param("z_filter_min", z_min, -0.05);
+    nh_.param("z_filter_max", z_max,  0.05);
 
     point_cloud_subscriber_          = nh_.subscribe(input_cloud_name, 10, &Jackal2_Cloud_Filter::pointCloudCallback, this);
     robo_filtered_cloud_publisher_   = nh_.advertise<sensor_msgs::PointCloud2>(output_cloud_robo_name,  10);
@@ -73,7 +77,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
       pcl::PointXYZI& point = pcl_cloud->points[i];
 
       // Check if the point meets the filtering condition
-      if (!((point.x > x_min && point.x < x_max) && (point.y > y_min && point.y < y_max)))
+      if (!((point.x > x_min && point.x < x_max) && (point.y > y_min && point.y < y_max) && (point.z > z_min && point.z < z_max)))
       {
         // Add the point to the filtered point cloud
         filtered_cloud->points.push_back(point);

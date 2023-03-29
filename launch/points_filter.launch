@@ -10,6 +10,8 @@
     <param name="x_filter_max"                           value="  0.0" />
     <param name="y_filter_min"                           value=" -0.3" />
     <param name="y_filter_max"                           value="  0.3" />
+    <param name="z_filter_min"                           value=" -0.05" />
+    <param name="z_filter_max"                           value="  0.05" />
   </node>
 
 </launch>
