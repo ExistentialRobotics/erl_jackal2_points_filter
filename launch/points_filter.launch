@@ -4,8 +4,8 @@
     <param name="input_cloud_topic_name"                 value="/ouster/points" />
     <param name="output_cloud_topic_name_in_roboframe"   value="/jackal2_filtered/points" />
     <param name="output_cloud_topic_name_in_worldframe"  value="/jackal2_filtered/points_in_map" />
-    <param name="world_frame_id"                         value="/map" />
-    <param name="lidar_frame_id"                         value="/os_sensor" />
+    <param name="world_frame_id"                         value="map" />
+    <param name="lidar_frame_id"                         value="os_sensor" />
     <param name="x_filter_min"                           value=" -0.5" />
     <param name="x_filter_max"                           value="  0.0" />
     <param name="y_filter_min"                           value=" -0.3" />
