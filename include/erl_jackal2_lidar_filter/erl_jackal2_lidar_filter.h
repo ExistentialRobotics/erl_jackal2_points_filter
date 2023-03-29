@@ -40,7 +40,6 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
     std::string output_cloud_robo_name;
     std::string output_cloud_world_name;
     
-
     nh_.param("input_cloud_topic_name", input_cloud_name, std::string("/ouster/points"));
     nh_.param("output_cloud_topic_name_in_roboframe" , output_cloud_robo_name,  std::string("/jackal2_cloudfilter/points_robo"));
     nh_.param("output_cloud_topic_name_in_worldframe", output_cloud_world_name, std::string("/jackal2_cloudfilter/points_world"));
@@ -74,7 +73,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
       pcl::PointXYZ& point = pcl_cloud->points[i];
 
       // Check if the point meets the filtering condition
-      if (!((point.x > -0.5 && point.x < 0.0) && (point.y > -0.3 && point.y < 0.3)))
+      if (!((point.x > x_min. && point.x < x_max) && (point.y > y_min && point.y < y_max)))
       {
         // Add the point to the filtered point cloud
         filtered_cloud->points.push_back(point);
@@ -90,7 +89,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     tf::TransformListener listener;
     tf::StampedTransform transform;
     try{
-        listener.lookupTransform(world_frame_id, lidar_frame_id, ros::Time(0), transform);
+        listener.lookupTransform(lidar_frame_id, world_frame_id, ros::Time(0), transform);
     }
     catch (tf::TransformException ex){
         ROS_ERROR("%s",ex.what());
