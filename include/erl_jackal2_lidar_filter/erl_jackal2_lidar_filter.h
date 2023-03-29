@@ -77,10 +77,12 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
       pcl::PointXYZI& point = pcl_cloud->points[i];
 
       // Check if the point meets the filtering condition
-      if (!((point.x > x_min && point.x < x_max) && (point.y > y_min && point.y < y_max) && (point.z > z_min && point.z < z_max)))
+      if (!((point.x > x_min && point.x < x_max) && (point.y > y_min && point.y < y_max)))
       {
-        // Add the point to the filtered point cloud
-        filtered_cloud->points.push_back(point);
+        if ((point.z < z_min || point.z > z_max)){
+            // Add the point to the filtered point cloud
+            filtered_cloud->points.push_back(point);
+        }
       }
     }
 
