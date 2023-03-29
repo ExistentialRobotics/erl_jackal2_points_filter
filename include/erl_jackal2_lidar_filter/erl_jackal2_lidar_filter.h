@@ -13,7 +13,7 @@ class Jackal2_Cloud_Filter
 {
     private:
         ros::NodeHandle nh_;
-        tf::TransformListener listener;
+        
 
         ros::Subscriber point_cloud_subscriber_;
         ros::Publisher  robo_filtered_cloud_publisher_;
@@ -58,31 +58,58 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
 
 void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
-    // Convert sensor_msgs::PointCloud2 to pcl::PointCloud
-    pcl::PointCloud<pcl::PointXYZ> cloud;
-    pcl::fromROSMsg(*cloud_msg, cloud);
+    // // Convert sensor_msgs::PointCloud2 to pcl::PointCloud
+    // pcl::PointCloud<pcl::PointXYZ> cloud;
+    // pcl::fromROSMsg(*cloud_msg, cloud);
 
-    // Create PassThrough filter object and set parameters for x-dimension
+    // // Create PassThrough filter object and set parameters for x-dimension
+    // pcl::PassThrough<pcl::PointXYZ> pass_x;
+    // pass_x.setInputCloud(cloud.makeShared());
+    // pass_x.setFilterFieldName("x"); // filter based on x-axis
+    // pass_x.setFilterLimits(x_max,x_min); // set range limits (-0.5m to 0m)
+    // pass_x.filter(cloud); // apply filter
+
+    // // Create PassThrough filter object and set parameters for y-dimension
+    // pcl::PassThrough<pcl::PointXYZ> pass_y;
+    // pass_y.setInputCloud(cloud.makeShared());
+    // pass_y.setFilterFieldName("y"); // filter based on y-axis
+    // pass_y.setFilterLimits(y_min, y_max); // set range limits (-0.3m to 0.3m)
+    // pass_y.filter(cloud); // apply filter
+
+    // // Convert pcl::PointCloud to sensor_msgs::PointCloud2
+    // sensor_msgs::PointCloud2 filtered_cloud_msg;
+    // pcl::toROSMsg(cloud, filtered_cloud_msg);
+
+    // // Publish filtered point cloud
+    // robo_filtered_cloud_publisher_.publish(filtered_cloud_msg);
+
+
+    // convert PointCloud2 to PCL point cloud
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromROSMsg(*cloud_msg, *cloud);
+
+    // create a pass-through filter to remove points with x < -0.5 or x > 0
     pcl::PassThrough<pcl::PointXYZ> pass_x;
-    pass_x.setInputCloud(cloud.makeShared());
-    pass_x.setFilterFieldName("x"); // filter based on x-axis
-    pass_x.setFilterLimits(x_max,x_min); // set range limits (-0.5m to 0m)
-    pass_x.filter(cloud); // apply filter
+    pass_x.setInputCloud(cloud);
+    pass_x.setFilterFieldName("x");
+    pass_x.setFilterLimits(-0.5, 0.0);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered_x(new pcl::PointCloud<pcl::PointXYZ>);
+    pass_x.filter(*cloud_filtered_x);
 
-    // Create PassThrough filter object and set parameters for y-dimension
+    // create a pass-through filter to remove points with y < -0.3 or y > 0.3
     pcl::PassThrough<pcl::PointXYZ> pass_y;
-    pass_y.setInputCloud(cloud.makeShared());
-    pass_y.setFilterFieldName("y"); // filter based on y-axis
-    pass_y.setFilterLimits(y_min, y_max); // set range limits (-0.3m to 0.3m)
-    pass_y.filter(cloud); // apply filter
+    pass_y.setInputCloud(cloud_filtered_x);
+    pass_y.setFilterFieldName("y");
+    pass_y.setFilterLimits(-0.3, 0.3);
+    pass_y.filter(*cloud_filtered);
 
-    // Convert pcl::PointCloud to sensor_msgs::PointCloud2
+    // convert filtered PCL point cloud to PointCloud2 and publish
     sensor_msgs::PointCloud2 filtered_cloud_msg;
-    pcl::toROSMsg(cloud, filtered_cloud_msg);
-
-    // Publish filtered point cloud
-    robo_filtered_cloud_publisher_.publish(filtered_cloud_msg);
+    pcl::toROSMsg(*cloud_filtered, filtered_cloud_msg);
+    filtered_cloud_msg.header = cloud_msg->header;
+    pub.publish(filtered_cloud_msg);
     
+    tf::TransformListener listener;
     tf::StampedTransform transform;
     try{
         listener.lookupTransform(world_frame_id, lidar_frame_id, ros::Time(0), transform);
@@ -91,7 +118,6 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
         ROS_ERROR("%s",ex.what());
         return;
     }
-
     sensor_msgs::PointCloud2 transformed_point_cloud;
     pcl_ros::transformPointCloud(world_frame_id, filtered_cloud_msg, transformed_point_cloud, listener);
     world_filtered_cloud_publisher_.publish(transformed_point_cloud);
