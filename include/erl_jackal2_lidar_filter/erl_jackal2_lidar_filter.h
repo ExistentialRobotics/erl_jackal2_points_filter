@@ -20,6 +20,7 @@ class Jackal2_Cloud_Filter
         ros::Publisher  world_filtered_cloud_publisher_;
 
         std::string world_frame_id;
+        std::string lidar_frame_id;
 
         void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud);
 
@@ -37,11 +38,11 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
     double x_max;
     double y_min;
     double y_max;
-    
     nh_.param("input_cloud_topic_name", input_cloud_name, std::string("/ouster/points"));
     nh_.param("output_cloud_topic_name_in_roboframe" , output_cloud_robo_name,  std::string("/jackal2_cloudfilter/points_robo"));
     nh_.param("output_cloud_topic_name_in_worldframe", output_cloud_world_name, std::string("/jackal2_cloudfilter/points_world"));
     nh_.param("world_frame_id", world_frame_id, std::string("/map"));
+    nh_.param("lidar_frame_id", lidar_frame_id, std::string("/os_sensor"));
     nh_.param("x_filter_min", x_min, -0.5);
     nh_.param("x_filter_max", x_max,  0.0);
     nh_.param("y_filter_min", y_min, -0.3);
@@ -62,28 +63,36 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     pcl::PassThrough<pcl::PointXYZ> pass_x;
     pass_x.setInputCloud(cloud.makeShared());
     pass_x.setFilterFieldName("x"); // filter based on x-axis
-    pass_x.setFilterLimits(-0.5, 0.0); // set range limits (-0.5m to 0m)
+    pass_x.setFilterLimits(x_max,x_min); // set range limits (-0.5m to 0m)
     pass_x.filter(cloud); // apply filter
 
     // Create PassThrough filter object and set parameters for y-dimension
     pcl::PassThrough<pcl::PointXYZ> pass_y;
     pass_y.setInputCloud(cloud.makeShared());
     pass_y.setFilterFieldName("y"); // filter based on y-axis
-    pass_y.setFilterLimits(-0.3, 0.3); // set range limits (-0.3m to 0.3m)
+    pass_y.setFilterLimits(y_min, y_max); // set range limits (-0.3m to 0.3m)
     pass_y.filter(cloud); // apply filter
 
     // Convert pcl::PointCloud to sensor_msgs::PointCloud2
     sensor_msgs::PointCloud2 filtered_cloud_msg;
     pcl::toROSMsg(cloud, filtered_cloud_msg);
-    
+
     // Publish filtered point cloud
     robo_filtered_cloud_publisher_.publish(filtered_cloud_msg);
+    
+    tf::StampedTransform transform;
+    try{
+        listener.lookupTransform(world_frame_id, lidar_frame_id, ros::Time(0), transform);
+    }
+    catch (tf::TransformException ex){
+        ROS_ERROR("%s",ex.what());
+        return;
+    }
 
     sensor_msgs::PointCloud2 transformed_point_cloud;
-    pcl_ros::transformPointCloud(world_frame_id, filtered_cloud_msg, transformed_point_cloud, tl_);
+    pcl_ros::transformPointCloud(filtered_cloud_msg, transformed_point_cloud, transform);
     world_filtered_cloud_publisher_.publish(transformed_point_cloud);
 }
 ros::Publisher pub;
-
 
 #endif
