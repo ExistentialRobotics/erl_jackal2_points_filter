@@ -1,6 +1,6 @@
 <launch>
 
-  <node pkg="erl_jackal2_lidar_filter" type="erl_jackal2_filter" name="jackal2_filter_node" output="screen">
+  <node pkg="erl_jackal2_filter" type="erl_jackal2_filter" name="jackal2_filter_node" output="screen">
     <param name="input_cloud_topic_name"                 value="/ouster/points" />
     <param name="output_cloud_topic_name_in_roboframe"   value="/jackal2_filtered/points" />
     <param name="output_cloud_topic_name_in_worldframe"  value="/jackal2_filtered/points_in_map" />
