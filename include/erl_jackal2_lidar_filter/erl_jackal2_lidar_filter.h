@@ -90,10 +90,6 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
     pass_y2.filter(*cloud_filtered);
 
-    // Convert the pcl/PointCloud data back to sensor_msgs/PointCloud2
-    sensor_msgs::PointCloud2 filtered_cloud_msg;
-    pcl::toROSMsg(*cloud_filtered, filtered_cloud_msg);
-
     // convert filtered PCL point cloud to PointCloud2 and publish
     sensor_msgs::PointCloud2 filtered_cloud_msg;
     pcl::toROSMsg(*cloud_filtered, filtered_cloud_msg);
