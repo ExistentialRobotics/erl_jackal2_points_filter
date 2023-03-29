@@ -88,14 +88,14 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     robo_filtered_cloud_publisher_.publish(filtered_cloud_msg);
     
     tf::TransformListener listener;
-    // tf::StampedTransform transform;
-    // try{
-    //     listener.lookupTransform(world_frame_id, lidar_frame_id, ros::Time(0), transform);
-    // }
-    // catch (tf::TransformException ex){
-    //     ROS_ERROR("%s",ex.what());
-    //     return;
-    // }
+    tf::StampedTransform transform;
+    try{
+        listener.lookupTransform(world_frame_id, lidar_frame_id, ros::Time(0), transform);
+    }
+    catch (tf::TransformException ex){
+        ROS_ERROR("%s",ex.what());
+        return;
+    }
     sensor_msgs::PointCloud2 transformed_point_cloud;
     pcl_ros::transformPointCloud(world_frame_id, filtered_cloud_msg, transformed_point_cloud, listener);
     world_filtered_cloud_publisher_.publish(transformed_point_cloud);
