@@ -22,6 +22,11 @@ class Jackal2_Cloud_Filter
         std::string world_frame_id;
         std::string lidar_frame_id;
 
+        double x_min;
+        double x_max;
+        double y_min;
+        double y_max;
+
         void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud);
 
     public:
@@ -34,10 +39,8 @@ Jackal2_Cloud_Filter::Jackal2_Cloud_Filter() : nh_("~")
     std::string input_cloud_name;
     std::string output_cloud_robo_name;
     std::string output_cloud_world_name;
-    double x_min;
-    double x_max;
-    double y_min;
-    double y_max;
+    
+
     nh_.param("input_cloud_topic_name", input_cloud_name, std::string("/ouster/points"));
     nh_.param("output_cloud_topic_name_in_roboframe" , output_cloud_robo_name,  std::string("/jackal2_cloudfilter/points_robo"));
     nh_.param("output_cloud_topic_name_in_worldframe", output_cloud_world_name, std::string("/jackal2_cloudfilter/points_world"));
