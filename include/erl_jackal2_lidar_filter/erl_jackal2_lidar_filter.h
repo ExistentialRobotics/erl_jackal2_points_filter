@@ -101,6 +101,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     pass_y.setInputCloud(cloud_filtered_x);
     pass_y.setFilterFieldName("y");
     pass_y.setFilterLimits(-0.3, 0.3);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
     pass_y.filter(*cloud_filtered);
 
     // convert filtered PCL point cloud to PointCloud2 and publish
