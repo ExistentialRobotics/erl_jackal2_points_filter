@@ -61,7 +61,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
 
     // Convert the input point cloud to a PCL point cloud
     pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::fromROSMsg(*cloud_in, *pcl_cloud);
+    pcl::fromROSMsg(*cloud_msg, *pcl_cloud);
 
     // Apply a passthrough filter to the PCL point cloud
     pcl::PassThrough<pcl::PointXYZ> filter;
