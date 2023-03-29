@@ -13,7 +13,7 @@ class Jackal2_Cloud_Filter
 {
     private:
         ros::NodeHandle nh_;
-        tf::TransformListener tl_;
+        tf::TransformListener listener;
 
         ros::Subscriber point_cloud_subscriber_;
         ros::Publisher  robo_filtered_cloud_publisher_;
@@ -93,7 +93,7 @@ void Jackal2_Cloud_Filter::pointCloudCallback(const sensor_msgs::PointCloud2Cons
     }
 
     sensor_msgs::PointCloud2 transformed_point_cloud;
-    pcl_ros::transformPointCloud(filtered_cloud_msg, transformed_point_cloud, transform);
+    pcl_ros::transformPointCloud(world_frame_id, filtered_cloud_msg, transformed_point_cloud, listener);
     world_filtered_cloud_publisher_.publish(transformed_point_cloud);
 }
 ros::Publisher pub;
